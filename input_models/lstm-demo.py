@@ -43,4 +43,4 @@ if classification[0][0] > classification[0][1]:
 else:
     print("Actual classification label:\n\nPositive Sentiment!")
 
-correct = input("\n\nThanks for using Evan's LSTM Movie Review Sentiment Analyzer\nDid we get it? (y/n):\n")
+print("\n\nThanks for using Evan's LSTM Movie Review Sentiment Analyzer\n")
