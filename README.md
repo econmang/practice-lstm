@@ -1,6 +1,6 @@
-#Math Capstone Project
+# Math Capstone Project
 
-##Description
+## Description
 
 This will be a set of programs to create and test different neural network architectures on the same task.
 In particular, I will be testing a feedforward network architecture (Convolutional Net), a recurrent neural net
