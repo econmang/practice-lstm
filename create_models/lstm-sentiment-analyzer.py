@@ -1,3 +1,5 @@
+# LSTM
+
 from __future__ import print_function
 
 # Imports for keras and sklearn
@@ -58,7 +60,7 @@ print('Developing the model...\n\n')
     Final layer is softmax output
     layer to determine sentiment"""
 model = Sequential()
-model.add(Embedding(max_words, 128))
+model.add(Embedding(max_words, 500))
 model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(2, activation='softmax'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
