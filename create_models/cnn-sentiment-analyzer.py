@@ -6,7 +6,7 @@ from __future__ import print_function
 # keras: API Build on top of Tensorflow
 from keras.preprocessing import sequence
 from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Flatten, Input, MaxPooling1D, Convolution1D, Embedding
+from keras.layers import Concatenate, Dense, Dropout, Flatten, Input, MaxPooling1D, Convolution1D, Embedding
 from keras.datasets import imdb
 from keras.utils import to_categorical
 from keras.optimizers import Adam
@@ -56,7 +56,7 @@ print("Developing the model...\n\n")
 #model = Sequential()
 
 #input layer
-input_layer = Input(shape=500)
+input_layer = Input(shape=(500,))
 
 #embedding layer
 lr = (Embedding(max_words, 500))(input_layer)
@@ -85,14 +85,14 @@ print("Model constructed..\n")
 print("Training...\n")
 
 model.fit(x_train, y_train, batch_size = batch_size, epochs = 4, validation_data = (x_valid, y_valid))
-print("Model finished training...\n\n")
+#print("Model finished training...\n\n")
 
-print("Testing model...\n")
-metric, accuracy = model.evaluation(x_test, y_test, batch_size = batch_size)
-print('Test loss:', metric)
-print('Test accuracy:', accuracy)
+#print("Testing model...\n")
+#metric, accuracy = model.evaluate(x_test, y_test, batch_size = batch_size)
+#print('Test loss:', metric)
+#print('Test accuracy:', accuracy)
 
-print('\n\n')
-print("Development of model complete.")
-print("Savid model...")
-model.save("../models/cnn_model.h5")
+#print('\n\n')
+#print("Development of model complete.")
+#print("Savid model...")
+#model.save("../models/cnn_model.h5")
