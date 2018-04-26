@@ -79,6 +79,24 @@ y_test_pred = model.predict(x_test)
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
 
+y_test_pred = model.predict(x_test)
+cmtest = confusion_matrix(y_test.argmax(axis=1), y_test_pred.argmax(axis=1))
+tp, fp = cmtest[0]
+fn, tn = cmtest[1]
+
+accuracy = (tp + tn)/(tp+tn+fn+fp)
+sensitivity = tp/(tp+fn)
+specificity = tn/(tn+fn)
+miss_rate = 1 - sensitivity
+fall_out = 1 - specificity
+
+print("\n")
+print("Accuracy",accuracy)
+print("Sensitivity:",sensitivity)
+print("Specificity:",specificity)
+print("Miss Rate:", miss_rate)
+print("Fall-out:",fall_out)
+
 print('\n\n')
 print("Development of model complete.")
 print("Saving model...")

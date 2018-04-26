@@ -10,6 +10,7 @@ from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.utils import to_categorical
 from keras.datasets import imdb
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
 # set parameters:
 max_words = 20000
@@ -26,31 +27,23 @@ print('Loading IMDB Sentiment Analysis data...\n\n')
 # Splitting initial dataset in half into training and testing set
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_words)
 x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.5, random_state=1)
-# Splitting out 50% of testing for validation set
-x_test, x_valid, y_test, y_valid = train_test_split(x_test, y_test, test_size=0.5, random_state = 1)
 print("Data loaded...")
 # Printing out length of each data sample
 print(len(x_train), 'training sequences')
-print(len(x_valid), 'validation sequences')
 print(len(x_test), 'testing sequences\n')
 
 # Padding sequences to keep input of constant size
 print('Padding sequences so they are of the same length...\n\n')
 x_train = sequence.pad_sequences(x_train, maxlen=max_sequence_length)
-x_valid = sequence.pad_sequences(x_valid, maxlen=max_sequence_length)
 x_test = sequence.pad_sequences(x_test, maxlen=max_sequence_length)
 
 # Converting Output data to categorical for use with softmax/categorical cross entropy
 y_train = to_categorical(y_train, num_classes=2)
-y_valid = to_categorical(y_valid, num_classes=2)
 y_test = to_categorical(y_test, num_classes=2)
 
 print("Data shape:")
 print('Training input shape:', x_train.shape)
 print('Training output shape:', y_train.shape,"\n")
-
-print('Validation input shape:', x_valid.shape)
-print('Validation output shape:', y_valid.shape,"\n")
 
 print('Testing input shape:', x_test.shape)
 print('Testing output shape:', y_test.shape,"\n")
@@ -83,7 +76,7 @@ print("Training...\n")
 # 2 Epochs (Training iterations) will be performed
 # Validation sets will be used to test validity after each epoch, ending training
 # if accuracy is within a small enough value
-model.fit(x_train, y_train,batch_size=batch_size,epochs=epochs,validation_data=(x_valid, y_valid))
+model.fit(x_train, y_train,batch_size=batch_size,epochs=epochs)
 print("Model finished training...\n\n")
 
 print("Testing model...\n")
@@ -91,7 +84,25 @@ metric, accuracy = model.evaluate(x_test,y_test, batch_size=batch_size)
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
 
+y_test_pred = model.predict(x_test)
+cmtest = confusion_matrix(y_test.argmax(axis=1), y_test_pred.argmax(axis=1))
+tp, fp = cmtest[0]
+fn, tn = cmtest[1]
+
+accuracy = (tp + tn)/(tp+tn+fn+fp)
+sensitivity = tp/(tp+fn)
+specificity = tn/(tn+fn)
+miss_rate = 1 - sensitivity
+fall_out = 1 - specificity
+
+print("\n")
+print("Accuracy",accuracy)
+print("Sensitivity:",sensitivity)
+print("Specificity:",specificity)
+print("Miss Rate:", miss_rate)
+print("Fall-out:",fall_out)
+
 print('\n\n')
 print("Development of model complete.")
 print("Saving model...")
-model.save("../models/cnn_5050epoch2model.h5")
+model.save("../../../models/cnn_5050epoch2model.h5")

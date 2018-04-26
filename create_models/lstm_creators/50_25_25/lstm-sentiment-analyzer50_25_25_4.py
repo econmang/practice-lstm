@@ -70,7 +70,7 @@ print("Training...\n")
 # 2 Epochs (Training iterations) will be performed
 # Validation sets will be used to test validity after each epoch, ending training
 # if accuracy is within a small enough value
-model.fit(x_train, y_train, batch_size = batch_size, epochs=2, validation_data=(x_valid, y_valid))
+model.fit(x_train, y_train, batch_size = batch_size, epochs=4, validation_data=(x_valid, y_valid))
 print("Model finished training...\n\n")
 
 print("Testing model...\n")
@@ -79,7 +79,25 @@ y_test_pred = model.predict(x_test)
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
 
+y_test_pred = model.predict(x_test)
+cmtest = confusion_matrix(y_test.argmax(axis=1), y_test_pred.argmax(axis=1))
+tp, fp = cmtest[0]
+fn, tn = cmtest[1]
+
+accuracy = (tp + tn)/(tp+tn+fn+fp)
+sensitivity = tp/(tp+fn)
+specificity = tn/(tn+fn)
+miss_rate = 1 - sensitivity
+fall_out = 1 - specificity
+
+print("\n")
+print("Accuracy",accuracy)
+print("Sensitivity:",sensitivity)
+print("Specificity:",specificity)
+print("Miss Rate:", miss_rate)
+print("Fall-out:",fall_out)
+
 print('\n\n')
 print("Development of model complete.")
 print("Saving model...")
-model.save("../../models/lstm_5050epoch2model.h5")
+model.save("../../../models/lstm_502525epoch4model.h5")

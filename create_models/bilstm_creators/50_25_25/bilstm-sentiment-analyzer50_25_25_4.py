@@ -8,7 +8,7 @@ from keras.layers import Dense, Dropout, Embedding, LSTM, Bidirectional
 from keras.utils import to_categorical
 from keras.datasets import imdb
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import confusion_matrix
 
 max_words = 20000
 max_sequence_length = 250
@@ -51,7 +51,7 @@ print('Testing output shape:', y_test.shape,"\n")
 print('Developing the model...\n\n')
 """ Developing a sequential model
     with an embedding matrix feeding into
-    64 bi-directional LSTM units (dropout of
+    128 bi-directional LSTM units (dropout of
     neurons is set to 0.2 as well as dropout
     for connections to recurrent layers).
 
@@ -60,7 +60,7 @@ print('Developing the model...\n\n')
 
 model = Sequential()
 model.add(Embedding(max_words, 128, input_length=max_sequence_length))
-model.add(Bidirectional(LSTM(64)))
+model.add(Bidirectional(LSTM(128)))
 model.add(Dropout(0.2))
 model.add(Dense(2, activation='softmax'))
 model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
@@ -78,6 +78,24 @@ print("Testing model...\n")
 metric, accuracy = model.evaluate(x_test,y_test,batch_size=batch_size)
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
+
+y_test_pred = model.predict(x_test)
+cmtest = confusion_matrix(y_test.argmax(axis=1), y_test_pred.argmax(axis=1))
+tp, fp = cmtest[0]
+fn, tn = cmtest[1]
+
+accuracy = (tp + tn)/(tp+tn+fn+fp)
+sensitivity = tp/(tp+fn)
+specificity = tn/(tn+fn)
+miss_rate = 1 - sensitivity
+fall_out = 1 - specificity
+
+print("\n")
+print("Accuracy",accuracy)
+print("Sensitivity:",sensitivity)
+print("Specificity:",specificity)
+print("Miss Rate:", miss_rate)
+print("Fall-out:",fall_out)
 
 print("\n\n")
 print("Development of model complete.")

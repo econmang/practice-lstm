@@ -60,7 +60,7 @@ print('Developing the model...\n\n')
 
 model = Sequential()
 model.add(Embedding(max_words, 128, input_length=max_sequence_length))
-model.add(Bidirectional(LSTM(64)))
+model.add(Bidirectional(LSTM(128)))
 model.add(Dropout(0.2))
 model.add(Dense(2, activation='softmax'))
 model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
@@ -77,14 +77,20 @@ print("Model finished training...\n\n")
 print("Testing model...\n")
 metric, accuracy = model.evaluate(x_test,y_test,batch_size=batch_size)
 y_test_pred = model.predict(x_test)
-cm_test = confusion_matrix(y_test,y_test_pred)
+cm_test = confusion_matrix(y_test.argmax(axis=1),y_test_pred.argmax(axis=1))
+print(cm_test)
+tp, fp = cm_test[0]
+fn, tn = cm_test[1]
 
+fh = open('bilstm50_25_25_2.txt','w')
+fh.write('TN:' + str(tn))
+fh.write('FP:' + str(fp))
+fh.write('FN:' + str(fn))
+fh.write('TP:' + str(tp))
+fh.close()
 
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
-print('Test matrix:')
-print(cm_test)
-
 
 print("\n\n")
 print("Development of model complete.")
