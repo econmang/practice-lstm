@@ -12,9 +12,9 @@ from matplotlib import pyplot
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
-max_words = 2000
-max_sequence_length = 80
-batch_size = 32
+max_words = 5000
+max_sequence_length = 500
+batch_size = 64
 
 print("Loading IMDB Sentiment Analysis data...\n\n")
 
@@ -61,7 +61,7 @@ print('Developing the model...\n\n')
     layer to determine sentiment"""
 model = Sequential()
 model.add(Embedding(max_words, 64, input_length=max_sequence_length))
-model.add(LSTM(128, dropout=0.2,recurrent_dropout=0.2))
+model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(2, activation='softmax'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
@@ -71,7 +71,7 @@ print("Training...\n")
 # 2 Epochs (Training iterations) will be performed
 # Validation sets will be used to test validity after each epoch, ending training
 # if accuracy is within a small enough value
-history = model.fit(x_train, y_train, batch_size = batch_size, epochs=4, validation_data=(x_valid, y_valid))
+history = model.fit(x_train, y_train, batch_size = batch_size, epochs=3, validation_data=(x_valid, y_valid))
 print("Model finished training...\n\n")
 
 pyplot.plot(history.history['loss'])
@@ -81,6 +81,7 @@ pyplot.ylabel('loss')
 pyplot.xlabel('epoch')
 pyplot.legend(['train', 'validation'], loc='upper right')
 pyplot.show()
+
 
 print("Testing model...\n")
 metric, accuracy = model.evaluate(x_test,y_test, batch_size=batch_size)

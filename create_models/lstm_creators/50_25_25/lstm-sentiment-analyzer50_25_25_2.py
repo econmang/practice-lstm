@@ -11,7 +11,7 @@ from keras.datasets import imdb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
-max_words = 20000
+max_words = 8000
 max_sequence_length = 250
 batch_size = 32
 

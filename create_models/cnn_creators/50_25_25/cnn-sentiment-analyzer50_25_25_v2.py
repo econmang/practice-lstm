@@ -1,22 +1,29 @@
-# LSTM
+# CNN
 
 # Imports for keras and sklearn
 # keras: API Built on top of Tensorflow
 from keras.preprocessing import sequence
 from keras.models import Sequential
-from keras.layers import Dense, Embedding
-from keras.layers import LSTM
+from keras.layers import Dense, Dropout, Activation
+from keras.layers import Embedding
+from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.utils import to_categorical
 from keras.datasets import imdb
 from matplotlib import pyplot
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
-max_words = 2000
-max_sequence_length = 80
+# set parameters:
+max_words = 20000
+max_sequence_length = 250
 batch_size = 32
+embedding_dims = 50
+filters = 250
+kernel_size = 3
+hidden_dims = 128
+epochs = 2
 
-print("Loading IMDB Sentiment Analysis data...\n\n")
+print('Loading IMDB Sentiment Analysis data...\n\n')
 
 # Splitting initial dataset in half into training and testing set
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_words)
@@ -53,25 +60,32 @@ print('Testing output shape:', y_test.shape,"\n")
 print('Developing the model...\n\n')
 """ Developing a sequential model
     with an embedding matrix feeding into
-    128 LSTM units (dropout of neurons is
-    set to 0.2 as well as dropout for
-    connections to recurrent layers).
+    128 hidden dimensions (dropout of neurons is
+    set to 0.2 & dropout called twice as no recurrent drop
+    exists for feedforward net).
 
     Final layer is softmax output
     layer to determine sentiment"""
 model = Sequential()
-model.add(Embedding(max_words, 64, input_length=max_sequence_length))
-model.add(LSTM(128, dropout=0.2,recurrent_dropout=0.2))
-model.add(Dense(2, activation='softmax'))
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.add(Embedding(max_words,embedding_dims,input_length=max_sequence_length))
+model.add(Dropout(0.2))
+model.add(Conv1D(filters,kernel_size,padding='valid',activation='relu',strides=1))
+model.add(GlobalMaxPooling1D())
+model.add(Dense(hidden_dims))
+model.add(Dropout(0.2))
+model.add(Activation('relu'))
+#model.add(Dense(1))
+#model.add(Activation('sigmoid'))
+model.add(Dense(2, activation="softmax"))
+model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
 
-print("Model constructed..\n")
+print("Model constructed...\n")
 print("Training...\n")
 # Model will work to fit training data in batch sizes of 32
 # 2 Epochs (Training iterations) will be performed
 # Validation sets will be used to test validity after each epoch, ending training
 # if accuracy is within a small enough value
-history = model.fit(x_train, y_train, batch_size = batch_size, epochs=4, validation_data=(x_valid, y_valid))
+history = model.fit(x_train, y_train,batch_size=batch_size,epochs=epochs,validation_data=(x_valid, y_valid))
 print("Model finished training...\n\n")
 
 pyplot.plot(history.history['loss'])
@@ -84,7 +98,6 @@ pyplot.show()
 
 print("Testing model...\n")
 metric, accuracy = model.evaluate(x_test,y_test, batch_size=batch_size)
-y_test_pred = model.predict(x_test)
 print('Test loss:',metric)
 print('Test accuracy:',accuracy)
 
@@ -109,4 +122,4 @@ print("Fall-out:",fall_out)
 print('\n\n')
 print("Development of model complete.")
 print("Saving model...")
-model.save("../../../models/lstm_502525epoch4model.h5")
+model.save("../../../models/cnn_5050epoch2model.h5")
