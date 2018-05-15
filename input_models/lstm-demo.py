@@ -33,11 +33,11 @@ model = load_model("../models/lstm_502525epoch2model.h5")
 #Using model to classify sentiment of input
 classification = model.predict(vector_input)
 
-print("Classification of your sentiment:\n")
-print("Unformatted network output:" + str(classification) + "\n")
+print("\nClassification of your sentiment:\n")
+print("Unformatted network output:" + "\n\t" + str(classification) + "\n")
 if classification[0][0] > classification[0][1]:
-    print("Actual classification label:\nNegative Sentiment!")
+    print("Actual classification label:\n\tNegative Sentiment!")
 else:
-    print("Actual classification label:\nPositive Sentiment!")
+    print("Actual classification label:\n\tPositive Sentiment!")
 
 print("\n\nThanks for using Evan's LSTM Movie Review Sentiment Analyzer\n")
